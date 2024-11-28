@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@103.166.185.48:6821:FREE
+    username: C##DATN       # Thay thế bằng tên người dùng Oracle của bạn
+    password: 123456abc       # Thay thế bằng mật khẩu của bạn
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:         # Có thể là 'none', 'validate', 'update', 'create', 'create-drop' tuỳ nhu cầu
+    show-sql: true               # Hiển thị câu truy vấn SQL trong log
+    properties:
+      hibernate:
+server:
+  servlet:
+    context-path: /api/v1
