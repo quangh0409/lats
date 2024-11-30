@@ -4,6 +4,7 @@ import com.example.lats.common.BaseResponse;
 import com.example.lats.common.Response;
 import com.example.lats.model.entity.Citizen;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CitizenService {
@@ -12,12 +13,10 @@ public interface CitizenService {
     /**
      * findPopulationPercentageByAgeRangeAndGender.
      *
-     * @param ageMin int
-     * @param ageMax int
-     * @param gender string
+     * @param hometown string
      * @return Double
      */
-    Double findPopulationPercentageByAgeRangeAndGender(int ageMin, int ageMax, String gender);
+    List<Map<String, Object>> findPopulationByAgeGroupAndHometown(String hometown);
 
     /**
      *

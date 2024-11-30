@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,8 +19,8 @@ public class CitizenController {
     private final CitizenService citizenService;
 
     @PostMapping("/")
-    public BaseResponse<Double> populationPercentageByAgeRangeAndGender(@RequestParam int ageMin, @RequestParam int ageMax, @RequestParam String gender){
-        return BaseResponse.ok(citizenService.findPopulationPercentageByAgeRangeAndGender(ageMin, ageMax, gender));
+    public BaseResponse<List<Map<String, Object>>> findPopulationByAgeGroupAndHometown(@RequestParam String hometown){
+        return BaseResponse.ok(citizenService.findPopulationByAgeGroupAndHometown(hometown));
     }
 
     @PostMapping("/count")

@@ -27,14 +27,12 @@ public class CitizenServiceImpl implements CitizenService {
     /**
      * findPopulationPercentageByAgeRangeAndGender.
      *
-     * @param ageMin int
-     * @param ageMax int
-     * @param gender string
+     * @param hometown string
      * @return Double
      */
     @Override
-    public Double findPopulationPercentageByAgeRangeAndGender(int ageMin, int ageMax, String gender) {
-        return citizenRepository.findPopulationPercentageByAgeRangeAndGender(ageMin,ageMax,gender);
+    public List<Map<String, Object>> findPopulationByAgeGroupAndHometown(String hometown) {
+        return citizenRepository.findPopulationByAgeGroupAndHometown(hometown);
     }
 
     /**

@@ -6,29 +6,93 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
     @Query(value = """
-             WITH TOTAL_COUNT AS (
-                 SELECT COUNT(*) AS TOTAL FROM CITIZEN
-             ),
-             FILTERED_COUNT AS (
-                 SELECT COUNT(*) AS FILTERED
-                 FROM CITIZEN
-                 WHERE DATE_OF_BIRTH BETWEEN ADD_MONTHS(TRUNC(SYSDATE), -(:ageMax * 12))
-                                         AND ADD_MONTHS(TRUNC(SYSDATE), -(:ageMin * 12))
-                   AND GENDER = :gender
-             )
+         WITH ALL_AGE_GROUPS AS (
+             SELECT '0-04' AS AGE_GROUP FROM DUAL UNION ALL
+             SELECT '05-09' FROM DUAL UNION ALL
+             SELECT '10-14' FROM DUAL UNION ALL
+             SELECT '15-19' FROM DUAL UNION ALL
+             SELECT '20-24' FROM DUAL UNION ALL
+             SELECT '25-29' FROM DUAL UNION ALL
+             SELECT '30-34' FROM DUAL UNION ALL
+             SELECT '35-39' FROM DUAL UNION ALL
+             SELECT '40-44' FROM DUAL UNION ALL
+             SELECT '45-49' FROM DUAL UNION ALL
+             SELECT '50-54' FROM DUAL UNION ALL
+             SELECT '55-59' FROM DUAL UNION ALL
+             SELECT '60-64' FROM DUAL UNION ALL
+             SELECT '65-69' FROM DUAL UNION ALL
+             SELECT '70-74' FROM DUAL UNION ALL
+             SELECT '75-79' FROM DUAL UNION ALL
+             SELECT '80+' FROM DUAL
+         ),
+         TOTAL_COUNT AS (
+             SELECT COUNT(*) AS TOTAL
+             FROM CITIZEN
+             WHERE (:hometown IS NULL OR HOMETOWN = :hometown)
+         ),
+         AGE_GROUPS AS (
              SELECT
-                 (FILTERED_COUNT.FILTERED * 100.0 / TOTAL_COUNT.TOTAL) AS PERCENTAGE
-             FROM
-                 TOTAL_COUNT, FILTERED_COUNT
-            """, nativeQuery = true)
-    Double findPopulationPercentageByAgeRangeAndGender(
-            @Param("ageMin") int ageMin,
-            @Param("ageMax") int ageMax,
-            @Param("gender") String gender
-    );
+                 CASE
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 0 AND 4 THEN '0-04'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 5 AND 9 THEN '05-09'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 10 AND 14 THEN '10-14'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 15 AND 19 THEN '15-19'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 20 AND 24 THEN '20-24'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 25 AND 29 THEN '25-29'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 30 AND 34 THEN '30-34'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 35 AND 39 THEN '35-39'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 40 AND 44 THEN '40-44'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 45 AND 49 THEN '45-49'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 50 AND 54 THEN '50-54'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 55 AND 59 THEN '55-59'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 60 AND 64 THEN '60-64'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 65 AND 69 THEN '65-69'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 70 AND 74 THEN '70-74'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 75 AND 79 THEN '75-79'
+                     ELSE '80+'
+                 END AS AGE_GROUP,
+                 GENDER,
+                 COUNT(*) AS COUNT
+             FROM CITIZEN
+             WHERE (:hometown IS NULL OR HOMETOWN = :hometown)
+             GROUP BY
+                 CASE
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 0 AND 4 THEN '0-04'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 5 AND 9 THEN '05-09'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 10 AND 14 THEN '10-14'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 15 AND 19 THEN '15-19'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 20 AND 24 THEN '20-24'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 25 AND 29 THEN '25-29'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 30 AND 34 THEN '30-34'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 35 AND 39 THEN '35-39'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 40 AND 44 THEN '40-44'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 45 AND 49 THEN '45-49'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 50 AND 54 THEN '50-54'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 55 AND 59 THEN '55-59'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 60 AND 64 THEN '60-64'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 65 AND 69 THEN '65-69'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 70 AND 74 THEN '70-74'
+                     WHEN MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12 BETWEEN 75 AND 79 THEN '75-79'
+                     ELSE '80+'
+                 END,
+                 GENDER
+         )
+         SELECT
+             ALL_AGE_GROUPS.AGE_GROUP,
+             COALESCE(SUM(CASE WHEN AGE_GROUPS.GENDER = 'Nam' THEN COUNT * 100.0 / TOTAL_COUNT.TOTAL ELSE 0 END), 0) AS MALE,
+             COALESCE(SUM(CASE WHEN AGE_GROUPS.GENDER = 'Nữ' THEN COUNT * 100.0 / TOTAL_COUNT.TOTAL ELSE 0 END), 0) AS FEMALE
+         FROM ALL_AGE_GROUPS
+         LEFT JOIN AGE_GROUPS ON ALL_AGE_GROUPS.AGE_GROUP = AGE_GROUPS.AGE_GROUP
+         LEFT JOIN TOTAL_COUNT ON 1 = 1
+         GROUP BY ALL_AGE_GROUPS.AGE_GROUP
+         ORDER BY ALL_AGE_GROUPS.AGE_GROUP
+        """, nativeQuery = true)
+    List<Map<String, Object>> findPopulationByAgeGroupAndHometown(@Param("hometown") String hometown);
+
 
     @Query("SELECT COUNT(c) FROM Citizen c WHERE " +
             "(:gender IS NULL OR c.gender = :gender) AND " +
