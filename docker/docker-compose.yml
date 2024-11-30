@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  app:
+    container_name: lats
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "6868:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod

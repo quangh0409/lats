@@ -21,11 +21,11 @@ import java.util.Date;
 @Table(name = "BIRTH_CERTIFICATE")
 public class BirthCertificate extends BaseClass<BirthCertificate> {
     @Id
-    private Long birthCertificateId; // Mã định danh giấy khai sinh
-    private Long childId; // Mã định danh của trẻ
-    private Long motherId; // Mã định danh của mẹ
-    private Long fatherId; // Mã định danh của cha
-    private Long informantId; // Mã định danh người khai sinh
+    private String birthCertificateId; // Mã định danh giấy khai sinh
+    private String childId; // Mã định danh của trẻ
+    private String motherId; // Mã định danh của mẹ
+    private String fatherId; // Mã định danh của cha
+    private String informantId; // Mã định danh người khai sinh
     private String informantRelationship; // Quan hệ người khai sinh với trẻ
     private String registrationPlace; // Nơi đăng ký khai sinh
     private Date registrationDate; // Ngày đăng ký khai sinh

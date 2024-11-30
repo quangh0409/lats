@@ -3,18 +3,15 @@ package com.example.lats.repository;
 import com.example.lats.model.entity.BirthCertificate;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Map;
 
 public interface BirthCertificateRepository extends BaseJpaRepository<BirthCertificate, String> {
-    // Đếm số trẻ em trai
-    @Query("SELECT COUNT(b) FROM BirthCertificate b JOIN Citizen c ON b.childId = c.citizenId WHERE c.gender = 'Nam'")
-    Long countMaleBirths();
-
-    // Đếm số trẻ em gái
-    @Query("SELECT COUNT(b) FROM BirthCertificate b JOIN Citizen c ON b.childId = c.citizenId WHERE c.gender = 'Nữ'")
-    Long countFemaleBirths();
+    // Đếm số trẻ em theo giới tính
+    @Query(value = "SELECT COUNT(b) FROM BirthCertificate b JOIN Citizen c ON b.childId = c.citizenId WHERE c.gender = :gender")
+    Long countGenderBirths(@Param(value = "gender") String gender);
 
 
     @Query(value = "SELECT c.HOMETOWN AS HOMETOWN, " +

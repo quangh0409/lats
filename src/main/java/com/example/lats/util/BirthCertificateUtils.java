@@ -16,16 +16,16 @@ public class BirthCertificateUtils {
             if(cell != null){
                 switch (cell.getColumnIndex()){
                     case 0:
-                        birthCertificate.setChildId(Long.valueOf(cell.toString()));
+                        birthCertificate.setChildId(cell.toString());
                         break;
                     case 1:
-                        birthCertificate.setMotherId(Long.valueOf(cell.toString()));
+                        birthCertificate.setMotherId(cell.toString());
                         break;
                     case 2:
-                        birthCertificate.setFatherId(Long.valueOf(cell.toString()));
+                        birthCertificate.setFatherId(cell.toString());
                         break;
                     case 3:
-                        birthCertificate.setInformantId(Long.valueOf(cell.toString()));
+                        birthCertificate.setInformantId(cell.toString());
                         break;
                     case 4:
                         birthCertificate.setInformantRelationship(cell.toString());
