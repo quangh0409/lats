@@ -41,4 +41,6 @@ public class CitizenController {
     public Map<String, Double> getEducationLevelPercentages(@RequestParam(required = false) String hometown) {
         return citizenService.calculateEducationLevelPercentages(hometown);
     }
+
+    
 }
