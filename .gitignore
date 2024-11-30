@@ -1,7 +1,9 @@
 HELP.md
-target/
-# Allow JAR files in the target directory
-!target/*.jar
+# Ignore everything in the target directory and subdirectories
+target/**
+
+# Allow JAR files anywhere inside target/
+!target/**/*.jar
 
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
