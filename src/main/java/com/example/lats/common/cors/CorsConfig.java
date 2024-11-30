@@ -13,7 +13,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all paths
-                        .allowedOrigins("http://127.0.01:3000") // Allow specific origin(s)
+                        .allowedOrigins("http://127.0.0.1:3000") // Allow specific origin(s)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow credentials (e.g., cookies, authorization headers)
