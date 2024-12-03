@@ -3,6 +3,7 @@ package com.example.lats.controller;
 import com.example.lats.common.BaseResponse;
 import com.example.lats.common.Response;
 import com.example.lats.model.entity.Citizen;
+import com.example.lats.model.response.EducationResponse;
 import com.example.lats.service.CitizenService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +40,12 @@ public class CitizenController {
     }
 
     @GetMapping("/education-level-percentages")
-    public Map<String, Double> getEducationLevelPercentages(@RequestParam(required = false) String hometown) {
-        return citizenService.calculateEducationLevelPercentages(hometown);
+    public BaseResponse<List<EducationResponse>> getEducationLevelPercentages(@RequestParam(required = false) String hometown) {
+        return BaseResponse.ok(citizenService.calculateEducationLevelPercentages(hometown));
     }
 
     @GetMapping("/district-population")
-    public List<Map<String, Object>> getDistrictPopulationCounts() {
-        return citizenService.getDistrictPopulationCounts();
+    public BaseResponse<List<Map<String, Object>>> getDistrictPopulationCounts() {
+        return BaseResponse.ok(citizenService.getDistrictPopulationCounts());
     }
 }

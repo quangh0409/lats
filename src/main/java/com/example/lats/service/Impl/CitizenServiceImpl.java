@@ -2,12 +2,14 @@ package com.example.lats.service.Impl;
 
 import com.example.lats.common.BaseResponse;
 import com.example.lats.model.entity.Citizen;
+import com.example.lats.model.response.EducationResponse;
 import com.example.lats.repository.CitizenRepository;
 import com.example.lats.service.CitizenService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +86,7 @@ public class CitizenServiceImpl implements CitizenService {
         return populationDistribution;
     }
 
-    public Map<String, Double> calculateEducationLevelPercentages(String hometown) {
+    public List<EducationResponse> calculateEducationLevelPercentages(String hometown) {
         // Lấy dữ liệu về số dân theo từng trình độ học vấn và HOMETOWN (hoặc toàn bộ nếu HOMETOWN là null)
         List<Object[]> result = citizenRepository.countPopulationByEducationLevelAndHometown(hometown);
 
@@ -94,21 +96,21 @@ public class CitizenServiceImpl implements CitizenService {
         // Kiểm tra tổng số dân có khác 0 để tránh lỗi chia cho 0
         if (totalPopulation == 0) {
             System.out.println("Tổng số dân là 0, không thể tính tỷ lệ.");
-            return new HashMap<>();
+            return new ArrayList<EducationResponse>();
         }
 
         // Khởi tạo Map để lưu trữ tỷ lệ phần trăm
-        Map<String, Double> educationLevelPercentages = new HashMap<>();
+
+        var list = new ArrayList<EducationResponse>();
 
         // Tính toán và thêm vào Map tỷ lệ phần trăm cho từng cấp bậc học vấn
         for (Object[] row : result) {
             String educationalLevel = (String) row[0];
             Long populationCount = (Long) row[1];
             double percentage = (populationCount / (double) totalPopulation) * 100;
-            educationLevelPercentages.put(educationalLevel, percentage);
+            list.add(new EducationResponse().setPercentage(percentage).setLevel(educationalLevel));
         }
-
-        return educationLevelPercentages;
+        return list;
     }
 
     @Override
