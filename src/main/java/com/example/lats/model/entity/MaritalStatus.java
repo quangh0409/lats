@@ -21,5 +21,5 @@ public class MaritalStatus extends BaseClass<MaritalStatus> {
     private Long Id;
     private String citizenId;
     private String maritalStatus;
-    private Long marriageAge;
+    private String marriageAge;
 }

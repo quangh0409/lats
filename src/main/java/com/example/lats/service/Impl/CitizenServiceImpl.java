@@ -110,4 +110,9 @@ public class CitizenServiceImpl implements CitizenService {
 
         return educationLevelPercentages;
     }
+
+    @Override
+    public List<Map<String, Object>> getDistrictPopulationCounts() {
+        return citizenRepository.getDistrictPopulationCounts();
+    }
 }

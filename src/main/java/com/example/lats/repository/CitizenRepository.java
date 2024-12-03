@@ -132,5 +132,28 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
             "GROUP BY e.educationalLevel")
     List<Object[]> countPopulationByEducationLevelAndHometown(@Param("hometown") String hometown);
 
+    @Query(value = """
+        SELECT 
+            LOWER(TRIM(REGEXP_SUBSTR(
+                TRANSLATE(HOMETOWN, 
+                    'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸ',
+                    'AAAAEEEIIOOOOUUADIUaaaaeeeiiioooouuadiuAAAAAAAAAAAAAEEEEEEEIIIIIOOOOOOOOOOOUUUUUUUUYYYY'), 
+                '-([^-]+)$', 1, 1, NULL, 1))) AS district,
+            COUNT(*) AS populationCount
+        FROM CITIZEN
+        WHERE REGEXP_SUBSTR(
+            TRANSLATE(HOMETOWN, 
+                'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸ',
+                'AAAAEEEIIOOOOUUADIUaaaaeeeiiioooouuadiuAAAAAAAAAAAAAEEEEEEEIIIIIOOOOOOOOOOOUUUUUUUUYYYY'), 
+            '-([^-]+)$', 1, 1, NULL, 1) IS NOT NULL
+        GROUP BY LOWER(TRIM(REGEXP_SUBSTR(
+            TRANSLATE(HOMETOWN, 
+                'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸ',
+                'AAAAEEEIIOOOOUUADIUaaaaeeeiiioooouuadiuAAAAAAAAAAAAAEEEEEEEIIIIIOOOOOOOOOOOUUUUUUUUYYYY'), 
+            '-([^-]+)$', 1, 1, NULL, 1)))
+        ORDER BY district
+    """, nativeQuery = true)
+    List<Map<String, Object>> getDistrictPopulationCounts();
+
 
 }

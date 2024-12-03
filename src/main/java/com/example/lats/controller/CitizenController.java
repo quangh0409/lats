@@ -19,22 +19,22 @@ public class CitizenController {
     private final CitizenService citizenService;
 
     @PostMapping("/")
-    public BaseResponse<List<Map<String, Object>>> findPopulationByAgeGroupAndHometown(@RequestParam String hometown){
+    public BaseResponse<List<Map<String, Object>>> findPopulationByAgeGroupAndHometown(@RequestParam String hometown) {
         return BaseResponse.ok(citizenService.findPopulationByAgeGroupAndHometown(hometown));
     }
 
     @PostMapping("/count")
-    public BaseResponse<Long> countByGenderAndHometown(@RequestParam String gender, @RequestParam String hometown){
+    public BaseResponse<Long> countByGenderAndHometown(@RequestParam String gender, @RequestParam String hometown) {
         return BaseResponse.ok(citizenService.countByGenderAndHometown(gender, hometown));
     }
 
     @GetMapping("/aging")
-    public BaseResponse<Double> calculateAgingIndex(){
+    public BaseResponse<Double> calculateAgingIndex() {
         return BaseResponse.ok(citizenService.calculateAgingIndex());
     }
 
     @GetMapping("/distribution")
-    public BaseResponse<Map<String, Double>> calculatePopulationDistribution(){
+    public BaseResponse<Map<String, Double>> calculatePopulationDistribution() {
         return BaseResponse.ok(citizenService.calculatePopulationDistribution());
     }
 
@@ -43,5 +43,8 @@ public class CitizenController {
         return citizenService.calculateEducationLevelPercentages(hometown);
     }
 
-    
+    @GetMapping("/district-population")
+    public List<Map<String, Object>> getDistrictPopulationCounts() {
+        return citizenService.getDistrictPopulationCounts();
+    }
 }

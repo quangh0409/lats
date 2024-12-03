@@ -170,7 +170,7 @@ public class CitizenUtils {
                         break;
                     }
                     case 19: {
-                        maritalStatus.setMarriageAge((long) Double.parseDouble(cell.toString()));
+                        maritalStatus.setMarriageAge(cell.toString());
                         break;
                     }
                     /**'

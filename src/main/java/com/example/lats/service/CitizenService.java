@@ -31,4 +31,6 @@ public interface CitizenService {
     Map<String, Double> calculatePopulationDistribution();
 
     Map<String, Double> calculateEducationLevelPercentages(String hometown);
+
+    List<Map<String, Object>> getDistrictPopulationCounts();
 }
