@@ -135,18 +135,21 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
     @Query(value = """
         SELECT 
             LOWER(TRIM(REGEXP_SUBSTR(
-                TRANSLATE(HOMETOWN, 
-                    'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸ',
-                    'AAAAEEEIIOOOOUUADIUaaaaeeeiiioooouuadiuAAAAAAAAAAAAAEEEEEEEIIIIIOOOOOOOOOOOUUUUUUUUYYYY'), 
+                HOMETOWN, 
                 'Huyện ([^,]+)', 1, 1, NULL, 1))) AS district, -- Lấy tên huyện từ HOMETOWN
-            COUNT(*) AS populationCount -- Đếm số dân theo huyện
-        FROM CITIZEN
+            COUNT(*) AS populationCount, -- Đếm số dân theo huyện
+            d.DISTRICT_ID -- Mã định danh của huyện
+        FROM CITIZEN c
+        LEFT JOIN DISTRICT d 
+            ON LOWER(TRIM(REGEXP_SUBSTR(
+                HOMETOWN, 
+                'Huyện ([^,]+)', 1, 1, NULL, 1))) = LOWER(d.DISTRICT_NAME) -- Ghép với DISTRICT_NAME
         WHERE HOMETOWN LIKE '%Huyện%' -- Chỉ xử lý các bản ghi có thông tin huyện
-        GROUP BY LOWER(TRIM(REGEXP_SUBSTR(
-            TRANSLATE(HOMETOWN, 
-                'ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯẠẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲỴÝỶỸ',
-                'AAAAEEEIIOOOOUUADIUaaaaeeeiiioooouuadiuAAAAAAAAAAAAAEEEEEEEIIIIIOOOOOOOOOOOUUUUUUUUYYYY'), 
-            'Huyện ([^,]+)', 1, 1, NULL, 1)))
+        GROUP BY 
+            LOWER(TRIM(REGEXP_SUBSTR(
+                HOMETOWN, 
+                'Huyện ([^,]+)', 1, 1, NULL, 1))),
+            d.DISTRICT_ID
         ORDER BY district
     """, nativeQuery = true)
     List<Map<String, Object>> getDistrictPopulationCounts();
