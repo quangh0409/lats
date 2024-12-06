@@ -53,7 +53,7 @@ public class Response<T> {
         String originService;
         String path;
 
-        //@CompiledJson
+//        @CompiledJson
         public Metadata(String code, Integer page, Integer size, Integer pages, Long total, String message, List<FieldVialation> errors, String originService, String path) {
             this.code = code;
             this.page = page;

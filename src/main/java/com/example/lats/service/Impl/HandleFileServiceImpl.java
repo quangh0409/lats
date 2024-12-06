@@ -32,6 +32,7 @@ public class HandleFileServiceImpl implements HandleFile {
     private final MarriageCertificateRepository marriageCertificateRepository;
     private final HouseholdRepository householdRepository;
     private final BirthCertificateRepository birthCertificateRepository;
+    private final DeathCertificateRepository deathCertificateRepository;
 
     @Override
     @Transactional
@@ -152,6 +153,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(row -> {
                     deathCertificates.add(DeathCertificateUtils.processDeathCertificate(row));
                 });
+        deathCertificateRepository.persistAllAndFlush(deathCertificates);
     }
 }
 

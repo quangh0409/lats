@@ -12,27 +12,33 @@ public class DeathCertificateUtils {
     public DeathCertificate processDeathCertificate(Row row) {
         var deathCertificate = new DeathCertificate().setCreateAt(OffsetDateTime.now());
         row.forEach(cell -> {
-            if(cell != null){
-                switch (cell.getColumnIndex()){
+            if (cell != null) {
+                switch (cell.getColumnIndex()) {
+                    case 1:
+                        deathCertificate.setGender(cell.toString());
+                        break;
+                    case 2:
+                        deathCertificate.setDateOfBirth(DateUtils.format(cell.toString().trim()));
+                        break;
+                    case 5:
+                        deathCertificate.setDeceasedId(cell.toString());
+                        break;
                     case 6:
-                        deathCertificate.setDeceasedId(Long.valueOf(cell.toString()));
+                        deathCertificate.setTimeOfDeath(DateUtils.format(cell.toString().trim()));
                         break;
                     case 7:
-                        deathCertificate.setTimeOfDeath(DateUtils.format(cell.toString()));
-                        break;
-                    case 8:
                         deathCertificate.setPlaceOfDeath(cell.toString());
                         break;
-                    case 9:
+                    case 8:
                         deathCertificate.setCauseOfDeathCode(cell.toString());
                         break;
-                    case 10:
+                    case 9:
                         deathCertificate.setRegistrationPlace(cell.toString());
                         break;
-                    case 11:
+                    case 10:
                         deathCertificate.setConfirmedId(Long.valueOf(cell.toString()));
                         break;
-                    case 12:
+                    case 11:
                         deathCertificate.setDateOfRegistration(DateUtils.format(cell.toString()));
                         break;
                     /**

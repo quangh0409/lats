@@ -44,7 +44,18 @@ public class CitizenServiceImpl implements CitizenService {
      */
     @Override
     public Long countByGenderAndHometown(String gender, String hometown) {
-        return citizenRepository.countByGenderAndHometown(gender, hometown);
+        String mappedGender = mapGender(gender);
+        return citizenRepository.countByGenderAndHometown(mappedGender, hometown);
+    }
+
+    private String mapGender(String gender) {
+        if ("male".equalsIgnoreCase(gender)) {
+            return "Nam";
+        } else if ("female".equalsIgnoreCase(gender)) {
+            return "Nữ";
+        } else {
+            return null; // If gender is not male or female
+        }
     }
 
     public Double calculateAgingIndex() {

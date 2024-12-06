@@ -15,25 +15,32 @@ public class BirthCertificateUtils {
         row.forEach(cell -> {
             if(cell != null){
                 switch (cell.getColumnIndex()){
-                    case 0:
-                        birthCertificate.setChildId(cell.toString());
-                        break;
+
                     case 1:
-                        birthCertificate.setMotherId(cell.toString());
+                        birthCertificate.setDateOfBirth(DateUtils.format(cell.toString()));
                         break;
                     case 2:
-                        birthCertificate.setFatherId(cell.toString());
-                        break;
-                    case 3:
-                        birthCertificate.setInformantId(cell.toString());
+                        birthCertificate.setGender(cell.toString());
                         break;
                     case 4:
-                        birthCertificate.setInformantRelationship(cell.toString());
+                        birthCertificate.setHometown(cell.toString());
                         break;
                     case 5:
-                        birthCertificate.setRegistrationPlace(cell.toString());
+                        birthCertificate.setChildId(cell.toString());
                         break;
                     case 6:
+                        birthCertificate.setMotherId(cell.toString());
+                        break;
+                    case 7:
+                        birthCertificate.setFatherId(cell.toString());
+                        break;
+                    case 8:
+                        birthCertificate.setInformantId(cell.toString());
+                        break;
+                    case 9:
+                        birthCertificate.setRegistrationPlace(cell.toString());
+                        break;
+                    case 10:
                         birthCertificate.setRegistrationDate(DateUtils.format(cell.toString()));
                         break;
                     /**

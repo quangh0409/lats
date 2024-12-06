@@ -1,8 +1,6 @@
 package com.example.lats.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,14 +16,18 @@ import java.util.Date;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Table(name = "DEATH_CERTIFICATE")
-public class DeathCertificate extends BaseClass<DeathCertificate>{
+public class DeathCertificate extends BaseClass<DeathCertificate> {
     @Id
-    private Long deathCertificateId;
-    private Long deceasedId; // Reference to Citizen entity
-    private Date timeOfDeath;
-    private String placeOfDeath;
-    private String causeOfDeathCode;
-    private String registrationPlace;
-    private Long confirmedId; // Reference to Citizen entity
-    private Date dateOfRegistration;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEATH_CERTIFICATE_ID_SEQ")
+    @SequenceGenerator(sequenceName = "DEATH_CERTIFICATE_ID_SEQ", allocationSize = 1, name = "DEATH_CERTIFICATE_ID_SEQ")
+    Long deathCertificateId;
+    String gender;
+    String deceasedId; // Reference to Citizen entity
+    Date timeOfDeath;
+    Date dateOfBirth;
+    String placeOfDeath;
+    String causeOfDeathCode;
+    String registrationPlace;
+    Long confirmedId; // Reference to Citizen entity
+    Date dateOfRegistration;
 }

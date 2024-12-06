@@ -1,7 +1,6 @@
 package com.example.lats.service;
 
 import com.example.lats.common.BaseResponse;
-import com.example.lats.common.Response;
 import com.example.lats.model.entity.Citizen;
 import com.example.lats.model.response.EducationResponse;
 
