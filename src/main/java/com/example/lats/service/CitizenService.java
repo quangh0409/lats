@@ -20,11 +20,10 @@ public interface CitizenService {
 
     /**
      *
-     * @param gender String
      * @param hometown String
      * @return long
      */
-    Long countByGenderAndHometown(String gender, String hometown);
+    Map<String, Long> countByGenderAndHometown(String hometown);
 
     Double calculateAgingIndex();
 

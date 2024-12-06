@@ -99,6 +99,17 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
             "(:hometown IS NULL OR c.hometown LIKE %:hometown%)")
     Long countByGenderAndHometown(@Param("gender") String gender, @Param("hometown") String hometown);
 
+    @Query(value = """
+        SELECT
+            COUNT(*) AS all_count,
+            COUNT(CASE WHEN c.gender = 'Nam' THEN 1 END) AS male_count,
+            COUNT(CASE WHEN c.gender = 'Nữ' THEN 1 END) AS female_count
+        FROM Citizen c
+        WHERE (:hometown IS NULL OR c.hometown LIKE %:hometown%)
+        """)
+    Map<String, Object> countByGenderAndHometown(@Param("hometown") String hometown);
+
+
     @Query(value = "SELECT COUNT(*) FROM Citizen c WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM c.date_of_birth) >= 60", nativeQuery = true)
     Long countSeniorCitizens();
 

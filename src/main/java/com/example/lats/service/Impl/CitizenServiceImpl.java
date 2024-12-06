@@ -38,25 +38,22 @@ public class CitizenServiceImpl implements CitizenService {
     }
 
     /**
-     * @param gender String
      * @param hometown String
      * @return long
      */
     @Override
-    public Long countByGenderAndHometown(String gender, String hometown) {
-        String mappedGender = mapGender(gender);
-        return citizenRepository.countByGenderAndHometown(mappedGender, hometown);
+    public Map<String, Long> countByGenderAndHometown(String hometown) {
+        Map<String, Object> rawCounts = citizenRepository.countByGenderAndHometown(hometown);
+
+        // Convert raw results into a more readable format
+        Map<String, Long> result = new HashMap<>();
+        result.put("all", ((Number) rawCounts.get("all_count")).longValue());
+        result.put("male", ((Number) rawCounts.get("male_count")).longValue());
+        result.put("female", ((Number) rawCounts.get("female_count")).longValue());
+
+        return result;
     }
 
-    private String mapGender(String gender) {
-        if ("male".equalsIgnoreCase(gender)) {
-            return "Nam";
-        } else if ("female".equalsIgnoreCase(gender)) {
-            return "Nữ";
-        } else {
-            return null; // If gender is not male or female
-        }
-    }
 
     public Double calculateAgingIndex() {
         Long seniorCount = citizenRepository.countSeniorCitizens();

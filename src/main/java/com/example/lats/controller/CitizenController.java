@@ -25,8 +25,8 @@ public class CitizenController {
     }
 
     @PostMapping("/count")
-    public BaseResponse<Long> countByGenderAndHometown(@RequestParam String gender, @RequestParam String hometown) {
-        return BaseResponse.ok(citizenService.countByGenderAndHometown(gender, hometown));
+    public BaseResponse<Map<String, Long>> countByGenderAndHometown(@RequestParam String hometown) {
+        return BaseResponse.ok(citizenService.countByGenderAndHometown(hometown));
     }
 
     @GetMapping("/aging")
