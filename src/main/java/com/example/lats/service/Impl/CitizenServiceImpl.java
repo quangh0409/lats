@@ -5,20 +5,19 @@ import com.example.lats.model.entity.Citizen;
 import com.example.lats.model.response.EducationResponse;
 import com.example.lats.repository.CitizenRepository;
 import com.example.lats.service.CitizenService;
+import com.example.lats.service.DistrictService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class CitizenServiceImpl implements CitizenService {
 
     private final CitizenRepository citizenRepository;
+    private final DistrictService districtService;
 
     @Override
     @Transactional
@@ -34,7 +33,7 @@ public class CitizenServiceImpl implements CitizenService {
      */
     @Override
     public List<Map<String, Object>> findPopulationByAgeGroupAndHometown(String hometown) {
-        return citizenRepository.findPopulationByAgeGroupAndHometown(hometown);
+        return citizenRepository.findPopulationByAgeGroupAndHometown(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
     }
 
     /**
@@ -43,7 +42,7 @@ public class CitizenServiceImpl implements CitizenService {
      */
     @Override
     public Map<String, Long> countByGenderAndHometown(String hometown) {
-        Map<String, Object> rawCounts = citizenRepository.countByGenderAndHometown(hometown);
+        Map<String, Object> rawCounts = citizenRepository.countByGenderAndHometown(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
         // Convert raw results into a more readable format
         Map<String, Long> result = new HashMap<>();
@@ -96,10 +95,10 @@ public class CitizenServiceImpl implements CitizenService {
 
     public List<EducationResponse> calculateEducationLevelPercentages(String hometown) {
         // Lấy dữ liệu về số dân theo từng trình độ học vấn và HOMETOWN (hoặc toàn bộ nếu HOMETOWN là null)
-        List<Object[]> result = citizenRepository.countPopulationByEducationLevelAndHometown(hometown);
+        List<Object[]> result = citizenRepository.countPopulationByEducationLevelAndHometown(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
         // Lấy tổng số dân
-        Long totalPopulation = citizenRepository.countByGenderAndHometown(null, hometown);
+        Long totalPopulation = citizenRepository.countByGenderAndHometown(null, Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
         // Kiểm tra tổng số dân có khác 0 để tránh lỗi chia cho 0
         if (totalPopulation == 0) {
@@ -115,7 +114,7 @@ public class CitizenServiceImpl implements CitizenService {
         for (Object[] row : result) {
             String educationalLevel = (String) row[0];
             Long populationCount = (Long) row[1];
-            double percentage = (populationCount / (double) totalPopulation) * 100;
+            double percentage = Math.round((populationCount / (double) totalPopulation) * 100 * 100.0) / 100.0;
             list.add(new EducationResponse().setPercentage(percentage).setLevel(educationalLevel));
         }
         return list;
