@@ -49,14 +49,14 @@ public class MarriageCertificateServiceImpl implements MarriageCertificateServic
             totalAgeSum += age * count; // Cộng dồn tích (age * total)
             totalCount += count; // Cộng dồn total
         }
+        double average = 0;
 
         // Kiểm tra để tránh chia cho 0
-        if (totalCount == 0) {
-            throw new IllegalArgumentException("Total count cannot be zero.");
+        if (totalCount != 0) {
+            // Tính trung bình
+            average = (double) totalAgeSum / totalCount;
         }
 
-        // Tính trung bình
-        double average = (double) totalAgeSum / totalCount;
 
         // Làm tròn đến 2 chữ số thập phân
         return Math.round(average * 100.0) / 100.0;

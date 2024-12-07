@@ -14,25 +14,28 @@ public class JobExperienceUtils {
             if(cell != null){
                 switch (cell.getColumnIndex()){
                     case 0:
-                        jobExperience.setCitizenId(Long.valueOf(cell.toString()));
-                        break;
-                    case 1:
-                        jobExperience.setStartDate(DateUtils.format(cell.toString()));
+                        jobExperience.setCitizenId(cell.toString());
                         break;
                     case 2:
-                        jobExperience.setEndDate(DateUtils.format(cell.toString()));
+                        jobExperience.setGender(cell.toString());
                         break;
                     case 3:
-                        jobExperience.setJobPosition(cell.toString());
+                        jobExperience.setDateOfBirth(DateUtils.format(cell.toString()));
                         break;
                     case 4:
-                        jobExperience.setWorkLocation(cell.toString());
+                        jobExperience.setHometown(cell.toString());
                         break;
                     case 5:
-                        jobExperience.setJobDescription(cell.toString());
+                        jobExperience.setStartDate(DateUtils.format(cell.toString()));
                         break;
                     case 6:
-                        jobExperience.setEmployer(cell.toString());
+                        jobExperience.setEndDate(DateUtils.format(cell.toString()));
+                        break;
+                    case 7:
+                        jobExperience.setJobPosition(cell.toString());
+                        break;
+                    case 8:
+                        jobExperience.setWorkLocation(cell.toString());
                         break;
                     /**
                      * @TODO handle exceptions

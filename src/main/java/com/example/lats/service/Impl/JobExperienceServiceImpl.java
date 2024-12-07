@@ -1,0 +1,43 @@
+package com.example.lats.service.Impl;
+
+import com.example.lats.repository.JobExperienceRepository;
+import com.example.lats.service.DistrictService;
+import com.example.lats.service.JobExperienceService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+@Service
+@RequiredArgsConstructor
+public class JobExperienceServiceImpl implements JobExperienceService {
+
+    private final DistrictService districtService;
+    private final JobExperienceRepository jobExperienceRepository;
+
+    @Override
+    public Map<String, Object> findGenderCountOver18ByHometown(String hometown) {
+        List<Object[]> results = jobExperienceRepository.findGenderCountOver18ByHometown(
+                Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+
+        Map<String, Long> genderCountMap = new HashMap<>();
+        for (Object[] result : results) {
+            String gender = (String) result[0];
+            Long count = ((Number) result[1]).longValue();
+            genderCountMap.put(gender, count);
+        }
+
+        // Calculate total count
+        long totalCount = genderCountMap.values().stream().mapToLong(Long::longValue).sum();
+
+        // Add "all" key for the total count
+        Map<String, Object> response = new HashMap<>();
+        response.putAll(genderCountMap);
+        response.put("all", totalCount);
+
+        return response;
+    }
+}

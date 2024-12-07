@@ -18,14 +18,15 @@ import java.util.Date;
 @Table(name = "JOB_EXPERIENCE")
 public class JobExperience extends BaseClass<JobExperience>{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_EXPERIENCE_SEQ")
-    @SequenceGenerator(sequenceName = "JOB_EXPERIENCE_SEQ", allocationSize = 1, name = "JOB_EXPERIENCE_SEQ")
-    private String Id;
-    private Long citizenId; // Reference to Citizen entity
-    private Date startDate;
-    private Date endDate;
-    private String jobPosition;
-    private String workLocation;
-    private String jobDescription;
-    private String employer;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_EXPERIENCE_ID_SEQ")
+    @SequenceGenerator(sequenceName = "JOB_EXPERIENCE_ID_SEQ", allocationSize = 1, name = "JOB_EXPERIENCE_ID_SEQ")
+    Long Id;
+    String citizenId; // Reference to Citizen entity
+    Date dateOfBirth;
+    String hometown;
+    String gender;
+    Date startDate;
+    Date endDate;
+    String jobPosition;
+    String workLocation;
 }
