@@ -1,8 +1,6 @@
 package com.example.lats.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,10 +18,16 @@ import java.util.Date;
 @Table(name = "MARRIAGE_CERTIFICATE")
 public class MarriageCertificate extends BaseClass<MarriageCertificate>{
     @Id
-    private Long marriageCertificateId;
-    private Date signDate;
-    private String registrationPlace;
-    private Long wifeId; // Reference to Citizen entity
-    private Long husbandId; // Reference to Citizen entity
-    private String marriageStatus;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MARRIAGE_CERTIFICATE_ID_SEQ")
+    @SequenceGenerator(sequenceName = "MARRIAGE_CERTIFICATE_ID_SEQ", allocationSize = 1, name = "MARRIAGE_CERTIFICATE_ID_SEQ")
+    Long marriageCertificateId;
+    Date signDate;
+    String registrationPlace;
+    String wifeId; // Reference to Citizen entity
+    Date wifeDateOfBirth; // Reference to Citizen entity
+    String wifeHometown; // Reference to Citizen entity
+    String husbandId; // Reference to Citizen entity
+    Date husbandDateOfBirth; // Reference to Citizen entity
+    String husbandHometown; // Reference to Citizen entity
+    String marriageStatus;
 }

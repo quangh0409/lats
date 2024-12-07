@@ -14,19 +14,28 @@ public class MarriageCertificateUtils {
             if(cell != null){
                 switch (cell.getColumnIndex()){
                     case 0:
-                        marriageCertificate.setMarriageCertificateId(Long.valueOf(cell.toString()));
-                        break;
-                    case 1:
                         marriageCertificate.setSignDate(DateUtils.format(cell.toString()));
                         break;
-                    case 2:
+                    case 1:
                         marriageCertificate.setRegistrationPlace(cell.toString());
                         break;
-                    case 3:
-                        marriageCertificate.setWifeId(Long.valueOf(cell.toString()));
+                    case 2:
+                        marriageCertificate.setWifeId(cell.toString());
                         break;
-                    case 4:
-                        marriageCertificate.setHusbandId(Long.valueOf(cell.toString()));
+                    case 6:
+                        marriageCertificate.setWifeDateOfBirth(DateUtils.format(cell.toString()));
+                        break;
+                    case 7:
+                        marriageCertificate.setWifeHometown(cell.toString());
+                        break;
+                    case 8:
+                        marriageCertificate.setHusbandId(cell.toString());
+                        break;
+                    case 12:
+                        marriageCertificate.setHusbandDateOfBirth(DateUtils.format(cell.toString()));
+                        break;
+                    case 13:
+                        marriageCertificate.setHusbandHometown(cell.toString());
                         break;
                     /**
                      * @TODO handle exceptions

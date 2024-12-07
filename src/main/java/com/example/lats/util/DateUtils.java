@@ -1,9 +1,6 @@
 package com.example.lats.util;
 
-import com.example.lats.common.exception.BaseErrorCode;
-import com.example.lats.common.exception.BaseException;
 import lombok.experimental.UtilityClass;
-import org.springframework.http.HttpStatus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,20 +9,30 @@ import java.util.Date;
 @UtilityClass
 public class DateUtils {
     public Date format(String date) {
+        System.out.println("input: " + date);
         try {
+            if (date == null || date.isEmpty()) {
+                throw new IllegalArgumentException("Date string is null or empty.");
+            }
+
             SimpleDateFormat dateFormat;
             if (date.contains("-")) {
                 dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             } else if (date.contains("/")) {
                 dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             } else {
-                System.out.println(date);
                 throw new IllegalArgumentException("Invalid date format. Expected 'dd-MM-yyyy' or 'dd/MM/yyyy'.");
             }
+
+            // Check if the input date can be parsed correctly
             return dateFormat.parse(date);
+
         } catch (ParseException e) {
-            System.out.println(date);
-            throw new RuntimeException(e);
+            System.out.println("Error parsing date: " + date);
+            throw new RuntimeException("Error parsing date: " + date, e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid date format: " + date);
+            throw e;  // Re-throw the exception after logging
         }
     }
 }
