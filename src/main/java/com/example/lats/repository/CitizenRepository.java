@@ -165,4 +165,15 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
             """, nativeQuery = true)
     List<Map<String, Object>> getDistrictPopulationCounts();
 
+    @Query(value = """
+            SELECT
+                COUNT(*) AS COUNT_OVER_18
+            FROM
+                CITIZEN
+            WHERE 
+                FLOOR(MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12) > 18
+                AND (HOMETOWN LIKE %:hometown% OR :hometown IS NULL OR :hometown = '')
+            """, nativeQuery = true)
+    Long countOver18ByHometown(@Param("hometown") String hometown);
+
 }
