@@ -11,7 +11,11 @@ import java.util.Map;
 public interface JobExperienceRepository extends BaseJpaRepository<JobExperience, String> {
     @Query(value = """
             SELECT
-                GENDER,
+                CASE 
+                    WHEN JE.GENDER = 'Nam' THEN 'male'
+                    WHEN JE.GENDER = 'Nữ' THEN 'female'
+                    ELSE JE.GENDER
+                END AS GENDER,
                 COUNT(*) AS COUNT_OVER_18
             FROM
                 JOB_EXPERIENCE JE
@@ -19,7 +23,11 @@ public interface JobExperienceRepository extends BaseJpaRepository<JobExperience
                 FLOOR(MONTHS_BETWEEN(SYSDATE, JE.DATE_OF_BIRTH) / 12) > 18
                 AND (:hometown IS NULL OR :hometown = '' OR JE.HOMETOWN LIKE %:hometown%)
             GROUP BY
-                GENDER
+                CASE 
+                    WHEN JE.GENDER = 'Nam' THEN 'male'
+                    WHEN JE.GENDER = 'Nữ' THEN 'female'
+                    ELSE JE.GENDER
+                END
             """, nativeQuery = true)
     List<Object[]> findGenderCountOver18ByHometown(@Param("hometown") String hometown);
 }

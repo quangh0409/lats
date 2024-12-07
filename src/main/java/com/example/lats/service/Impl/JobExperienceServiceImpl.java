@@ -32,15 +32,18 @@ public class JobExperienceServiceImpl implements JobExperienceService {
         for (Object[] result : results) {
             String gender = (String) result[0];
             var count = ((Number) result[1]).longValue();
-            genderCountMap.put(gender, (double) Math.round(((double) count /all) * 100.0));
+            genderCountMap.put(gender,Math.round(((double) count /all) * 10000.0)/ 100.0);
         }
 
         // Calculate total count
-        long totalCount = genderCountMap.values().stream().mapToLong(Double::longValue).sum();
+        var totalCount = genderCountMap.values()
+                .stream()  // Chuyển đổi values thành stream
+                .mapToDouble(Double::doubleValue)  // Chuyển các giá trị thành kiểu primitive double
+                .sum();
 
         // Add "all" key for the total count
         Map<String, Object> response = new HashMap<>(genderCountMap);
-        response.put("all", totalCount);
+        response.put("all", Math.round(totalCount * 100.0) / 100.0);
 
         return response;
     }
