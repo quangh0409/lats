@@ -11,7 +11,7 @@ import java.util.Map;
 public interface JobExperienceRepository extends BaseJpaRepository<JobExperience, String> {
     @Query(value = """
             SELECT
-                CASE 
+                CASE
                     WHEN JE.GENDER = 'Nam' THEN 'male'
                     WHEN JE.GENDER = 'Nữ' THEN 'female'
                     ELSE JE.GENDER
@@ -23,7 +23,7 @@ public interface JobExperienceRepository extends BaseJpaRepository<JobExperience
                 FLOOR(MONTHS_BETWEEN(SYSDATE, JE.DATE_OF_BIRTH) / 12) > 18
                 AND (:hometown IS NULL OR :hometown = '' OR JE.HOMETOWN LIKE %:hometown%)
             GROUP BY
-                CASE 
+                CASE
                     WHEN JE.GENDER = 'Nam' THEN 'male'
                     WHEN JE.GENDER = 'Nữ' THEN 'female'
                     ELSE JE.GENDER

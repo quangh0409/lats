@@ -4,6 +4,7 @@ import com.example.lats.common.BaseResponse;
 import com.example.lats.model.entity.Citizen;
 import com.example.lats.model.response.EducationResponse;
 import com.example.lats.repository.CitizenRepository;
+import com.example.lats.repository.EducationRepository;
 import com.example.lats.service.CitizenService;
 import com.example.lats.service.DistrictService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ public class CitizenServiceImpl implements CitizenService {
 
     private final CitizenRepository citizenRepository;
     private final DistrictService districtService;
+    private final EducationRepository educationRepository;
 
 
     @Override
@@ -100,7 +102,9 @@ public class CitizenServiceImpl implements CitizenService {
         List<Object[]> result = citizenRepository.countPopulationByEducationLevelAndHometown(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
         // Lấy tổng số dân
-        Long totalPopulation = citizenRepository.countByGenderAndHometown(null, Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+        //Long totalPopulation = citizenRepository.countByGenderAndHometown(null, Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+
+        long totalPopulation = educationRepository.count();
 
         // Kiểm tra tổng số dân có khác 0 để tránh lỗi chia cho 0
         if (totalPopulation == 0) {

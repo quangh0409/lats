@@ -122,7 +122,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(row -> {
                     households.add(HouseholdUtils.processHousehold(row));
                 });
-        householdRepository.persistAllAndFlush(households);
+        householdRepository.mergeAllAndFlush(households);
     }
 
     private void handleFileJobExperience(Sheet sheet) {
@@ -137,7 +137,7 @@ public class HandleFileServiceImpl implements HandleFile {
                     batch.forEach(row -> {
                         jobExperiences.add(JobExperienceUtils.processJobExperience(row));
                     });
-                    jobExperienceRepository.persistAllAndFlush(jobExperiences);
+                    jobExperienceRepository.mergeAllAndFlush(jobExperiences);
                 });
     }
 
@@ -152,7 +152,7 @@ public class HandleFileServiceImpl implements HandleFile {
                     batch.forEach(row -> {
                         marriageCertificates.add(MarriageCertificateUtils.processMarriageCertificate(row));
                     });
-                    marriageCertificateRepository.persistAllAndFlush(marriageCertificates);
+                    marriageCertificateRepository.mergeAllAndFlush(marriageCertificates);
                 });
     }
 
@@ -167,7 +167,7 @@ public class HandleFileServiceImpl implements HandleFile {
                     batch.forEach(row -> {
                         birthCertificates.add(BirthCertificateUtils.processBirthCertificate(row));
                     });
-                    birthCertificateRepository.persistAllAndFlush(birthCertificates);
+                    birthCertificateRepository.mergeAllAndFlush(birthCertificates);
                 });
     }
 
@@ -182,7 +182,7 @@ public class HandleFileServiceImpl implements HandleFile {
                     batch.forEach(row -> {
                         deathCertificates.add(DeathCertificateUtils.processDeathCertificate(row));
                     });
-                    deathCertificateRepository.persistAllAndFlush(deathCertificates);
+                    deathCertificateRepository.mergeAllAndFlush(deathCertificates);
                 });
     }
 
@@ -200,7 +200,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(batch -> {
                     try {
                         // Đẩy batch xuống DB
-                        citizenRepository.persistAllAndFlush(batch);
+                        citizenRepository.mergeAllAndFlush(batch);
                     } catch (Exception e) {
                         // Xử lý lỗi nếu cần
                         System.err.println("Error while saving batch: " + e.getMessage());
@@ -222,7 +222,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(batch -> {
                     try {
                         // Đẩy batch xuống DB
-                        educationRepository.persistAllAndFlush(batch);
+                        educationRepository.mergeAllAndFlush(batch);
                     } catch (Exception e) {
                         // Xử lý lỗi nếu cần
                         System.err.println("Error while saving batch of educations: " + e.getMessage());
@@ -244,7 +244,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(batch -> {
                     try {
                         // Đẩy batch xuống DB
-                        occupationRepository.persistAllAndFlush(batch);
+                        occupationRepository.mergeAllAndFlush(batch);
                     } catch (Exception e) {
                         // Xử lý lỗi nếu cần
                         System.err.println("Error while saving batch of occupations: " + e.getMessage());
@@ -266,7 +266,7 @@ public class HandleFileServiceImpl implements HandleFile {
                 .forEach(batch -> {
                     try {
                         // Đẩy batch xuống DB
-                        maritalStatusRepository.persistAllAndFlush(batch);
+                        maritalStatusRepository.mergeAllAndFlush(batch);
                     } catch (Exception e) {
                         // Xử lý lỗi nếu cần
                         System.err.println("Error while saving batch of marital statuses: " + e.getMessage());

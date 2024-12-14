@@ -23,8 +23,9 @@ public class JobExperienceServiceImpl implements JobExperienceService {
 
     @Override
     public Map<String, Object> findGenderCountOver18ByHometown(String hometown) {
-        var all = citizenRepository.countOver18ByHometown(
-                Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+        //var all = citizenRepository.countOver18ByHometown(
+                //Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+        var all = jobExperienceRepository.count();
         List<Object[]> results = jobExperienceRepository.findGenderCountOver18ByHometown(
                 Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
