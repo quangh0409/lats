@@ -141,18 +141,20 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
                         HOMETOWN,
                         'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)) AS full_name, -- Lấy cụm từ đầy đủ từ HOMETOWN
                 COUNT(*) AS populationCount, -- Đếm số dân theo huyện hoặc thành phố
-                d.DISTRICT_ID -- Mã định danh của huyện/thành phố
+                d.DISTRICT_ID, -- Mã định danh của huyện/thành phố
+                d.COORDINATES -- Tọa độ của huyện/thành phố
             FROM CITIZEN c
-                        LEFT JOIN DISTRICT d
-                                ON TRIM(REGEXP_SUBSTR(
-                                        HOMETOWN,
-                                        'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)) = TRIM(d.DISTRICT_NAME) -- Ghép với DISTRICT_NAME
+                     LEFT JOIN DISTRICT d
+                               ON TRIM(REGEXP_SUBSTR(
+                                       HOMETOWN,
+                                       'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)) = TRIM(d.DISTRICT_NAME) -- Ghép với DISTRICT_NAME
             WHERE HOMETOWN LIKE '%Huyện%' OR HOMETOWN LIKE '%Thành Phố%' -- Chỉ xử lý các bản ghi có huyện hoặc thành phố
             GROUP BY
                 TRIM(REGEXP_SUBSTR(
                         HOMETOWN,
                         'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)), -- Group theo tên đầy đủ
-                d.DISTRICT_ID
+                d.DISTRICT_ID,
+                d.COORDINATES -- Thêm COORDINATES vào GROUP BY nếu không muốn lỗi
             ORDER BY full_name
             """, nativeQuery = true)
     List<Map<String, Object>> getDistrictPopulationCounts();

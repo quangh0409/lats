@@ -6,6 +6,7 @@ import com.example.lats.service.DeathCertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class DeathCertificateServiceImpl implements DeathCertificateService {
 
     @Override
     public Map<String, Double> calculateUnderOneYearDeathRate() {
+        DecimalFormat df = new DecimalFormat("#.00");
         // Fetch counts for deaths
         Map<String, Object> deathCounts = deathCertificateRepository.countUnderOneYearDeathsByGender();
 
@@ -37,6 +39,11 @@ public class DeathCertificateServiceImpl implements DeathCertificateService {
         double totalRate = totalBirths > 0 ? (totalDeaths * 1000.0 / totalBirths) : 0;
         double maleRate = maleBirths > 0 ? (maleDeaths * 1000.0 / maleBirths) : 0;
         double femaleRate = femaleBirths > 0 ? (femaleDeaths * 1000.0 / femaleBirths) : 0;
+
+        // Làm tròn kết quả
+        totalRate = Double.parseDouble(df.format(totalRate));
+        maleRate = Double.parseDouble(df.format(maleRate));
+        femaleRate = Double.parseDouble(df.format(femaleRate));
 
         // Prepare response
         Map<String, Double> result = new HashMap<>();

@@ -6,6 +6,7 @@ import com.example.lats.model.response.EducationResponse;
 import com.example.lats.repository.CitizenRepository;
 import com.example.lats.service.CitizenService;
 import com.example.lats.service.DistrictService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class CitizenServiceImpl implements CitizenService {
 
     private final CitizenRepository citizenRepository;
     private final DistrictService districtService;
+
 
     @Override
     @Transactional
@@ -122,6 +124,29 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     public List<Map<String, Object>> getDistrictPopulationCounts() {
-        return citizenRepository.getDistrictPopulationCounts();
+        var rawData = citizenRepository.getDistrictPopulationCounts();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Tạo danh sách mới chứa các bản sao có thể chỉnh sửa
+        List<Map<String, Object>> processedData = new ArrayList<>();
+
+        for (Map<String, Object> row : rawData) {
+            // Tạo bản sao mới của Map
+            Map<String, Object> editableRow = new HashMap<>(row);
+
+            String coordinatesJson = (String) editableRow.get("COORDINATES");
+            if (coordinatesJson != null) {
+                try {
+                    // Chuyển từ chuỗi JSON sang Map
+                    Map<String, Double> coordinatesMap = objectMapper.readValue(coordinatesJson, Map.class);
+                    editableRow.put("COORDINATES", coordinatesMap); // Ghi đè giá trị mới
+                } catch (Exception e) {
+                    editableRow.put("COORDINATES", null); // Xử lý lỗi nếu JSON không hợp lệ
+                }
+            }
+
+            processedData.add(editableRow); // Thêm bản ghi đã xử lý vào danh sách mới
+        }
+        return processedData;
     }
 }
