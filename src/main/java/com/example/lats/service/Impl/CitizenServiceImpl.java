@@ -63,7 +63,7 @@ public class CitizenServiceImpl implements CitizenService {
         }
 
         // Tính chỉ số già hóa
-        return (double) seniorCount / childrenCount * 100;
+        return Math.round((double) seniorCount / childrenCount * 100 * 100) / 100.0;
     }
 
     public Map<String, Double> calculatePopulationDistribution() {
@@ -80,9 +80,9 @@ public class CitizenServiceImpl implements CitizenService {
         Long populationAge65Plus = citizenRepository.countPopulationAge65Plus();
 
         // Tính tỷ trọng
-        double youthPopulationRate = (double) populationAge0To14 / totalPopulation * 100;
-        double workingAgePopulationRate = (double) populationAge15To64 / totalPopulation * 100;
-        double seniorPopulationRate = (double) populationAge65Plus / totalPopulation * 100;
+        double youthPopulationRate = Math.round((double) populationAge0To14 / totalPopulation * 100 * 100) / 100.0;
+        double workingAgePopulationRate = Math.round((double) populationAge15To64 / totalPopulation * 100 * 100) / 100.0;
+        double seniorPopulationRate = Math.round((double) populationAge65Plus / totalPopulation * 100 * 100) / 100.0;
 
         // Kết quả
         Map<String, Double> populationDistribution = new HashMap<>();

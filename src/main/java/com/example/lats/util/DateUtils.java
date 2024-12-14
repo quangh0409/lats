@@ -9,7 +9,6 @@ import java.util.Date;
 @UtilityClass
 public class DateUtils {
     public Date format(String date) {
-        System.out.println("input: " + date);
         try {
             if (date == null || date.isEmpty()) {
                 throw new IllegalArgumentException("Date string is null or empty.");
@@ -26,6 +25,32 @@ public class DateUtils {
 
             // Check if the input date can be parsed correctly
             return dateFormat.parse(date);
+
+        } catch (ParseException e) {
+            System.out.println("Error parsing date: " + date);
+            throw new RuntimeException("Error parsing date: " + date, e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid date format: " + date);
+            throw e;  // Re-throw the exception after logging
+        }
+    }
+
+    public boolean checkFormat(String date) {
+        try {
+            if (date == null || date.isEmpty()) {
+                throw new IllegalArgumentException("Date string is null or empty.");
+            }
+
+            SimpleDateFormat dateFormat;
+            if (date.contains("-")) {
+                dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            } else if (date.contains("/")) {
+                dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            } else {
+                return false;
+            }
+            dateFormat.parse(date);
+            return true;
 
         } catch (ParseException e) {
             System.out.println("Error parsing date: " + date);

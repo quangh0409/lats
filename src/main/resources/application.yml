@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:oracle:thin:@103.166.185.48:6821:FREE
     username: C##DATN       # Thay thế bằng tên người dùng Oracle của bạn
@@ -9,6 +13,10 @@ spring:
     show-sql: true               # Hiển thị câu truy vấn SQL trong log
     properties:
       hibernate:
+        order_inserts: true
+        order_updates: true
+        jdbc.batch_size: 40
+        generate_statistics: true
 server:
   servlet:
     context-path: /api/v1

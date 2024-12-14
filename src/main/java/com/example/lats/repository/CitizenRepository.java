@@ -94,9 +94,7 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
     List<Map<String, Object>> findPopulationByAgeGroupAndHometown(@Param("hometown") String hometown);
 
 
-    @Query("SELECT COUNT(c) FROM Citizen c WHERE " +
-            "(:gender IS NULL OR c.gender = :gender) AND " +
-            "(:hometown IS NULL OR c.hometown LIKE %:hometown%)")
+    @Query("SELECT COUNT(c) FROM Citizen c WHERE " + "(:gender IS NULL OR c.gender = :gender) AND " + "(:hometown IS NULL OR c.hometown LIKE %:hometown%)")
     Long countByGenderAndHometown(@Param("gender") String gender, @Param("hometown") String hometown);
 
     @Query(value = """
@@ -113,9 +111,7 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
     @Query(value = "SELECT COUNT(*) FROM Citizen c WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM c.date_of_birth) >= 60", nativeQuery = true)
     Long countSeniorCitizens();
 
-    @Query(value = "SELECT COUNT(*) FROM Citizen c WHERE " +
-            "EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM c.date_of_birth) BETWEEN 0 AND 14",
-            nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM Citizen c WHERE " + "EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM c.date_of_birth) BETWEEN 0 AND 14", nativeQuery = true)
     Long countChildren();
 
     @Query(value = """
@@ -136,43 +132,43 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
     @Query(value = "SELECT COUNT(*) FROM Citizen WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM date_of_birth) >= 65", nativeQuery = true)
     Long countPopulationAge65Plus();
 
-    @Query("SELECT e.educationalLevel, COUNT(e) " +
-            "FROM Education e " +
-            "JOIN Citizen c ON e.citizenId = c.citizenId " +
-            "WHERE (:hometown IS NULL OR c.hometown LIKE %:hometown%) " +
-            "GROUP BY e.educationalLevel")
+    @Query("SELECT e.technicalQualification, COUNT(e) " + "FROM Education e " + "JOIN Citizen c ON e.citizenId = c.citizenId " + "WHERE (:hometown IS NULL OR c.hometown LIKE %:hometown%) " + "GROUP BY e.technicalQualification")
     List<Object[]> countPopulationByEducationLevelAndHometown(@Param("hometown") String hometown);
 
     @Query(value = """
-                SELECT 
-                    LOWER(TRIM(REGEXP_SUBSTR(
-                        HOMETOWN, 
-                        'Huyện ([^,]+)', 1, 1, NULL, 1))) AS district, -- Lấy tên huyện từ HOMETOWN
-                    COUNT(*) AS populationCount, -- Đếm số dân theo huyện
-                    d.DISTRICT_ID -- Mã định danh của huyện
-                FROM CITIZEN c
-                LEFT JOIN DISTRICT d 
-                    ON LOWER(TRIM(REGEXP_SUBSTR(
-                        HOMETOWN, 
-                        'Huyện ([^,]+)', 1, 1, NULL, 1))) = LOWER(d.DISTRICT_NAME) -- Ghép với DISTRICT_NAME
-                WHERE HOMETOWN LIKE '%Huyện%' -- Chỉ xử lý các bản ghi có thông tin huyện
-                GROUP BY 
-                    LOWER(TRIM(REGEXP_SUBSTR(
-                        HOMETOWN, 
-                        'Huyện ([^,]+)', 1, 1, NULL, 1))),
-                    d.DISTRICT_ID
-                ORDER BY district
+            SELECT
+                TRIM(REGEXP_SUBSTR(
+                        HOMETOWN,
+                        'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)) AS full_name, -- Lấy cụm từ đầy đủ từ HOMETOWN
+                COUNT(*) AS populationCount, -- Đếm số dân theo huyện hoặc thành phố
+                d.DISTRICT_ID -- Mã định danh của huyện/thành phố
+            FROM CITIZEN c
+                        LEFT JOIN DISTRICT d
+                                ON TRIM(REGEXP_SUBSTR(
+                                        HOMETOWN,
+                                        'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)) = TRIM(d.DISTRICT_NAME) -- Ghép với DISTRICT_NAME
+            WHERE HOMETOWN LIKE '%Huyện%' OR HOMETOWN LIKE '%Thành Phố%' -- Chỉ xử lý các bản ghi có huyện hoặc thành phố
+            GROUP BY
+                TRIM(REGEXP_SUBSTR(
+                        HOMETOWN,
+                        'Huyện [^,]+|Thành Phố [^,]+', 1, 1, NULL, 0)), -- Group theo tên đầy đủ
+                d.DISTRICT_ID
+            ORDER BY full_name
             """, nativeQuery = true)
     List<Map<String, Object>> getDistrictPopulationCounts();
 
     @Query(value = """
             SELECT
+                NVL(REGEXP_SUBSTR(HOMETOWN, 'Huyện [^,]+'),
+                    REGEXP_SUBSTR(HOMETOWN, 'Thành Phố [^,]+')) AS DISTRICT_CITY,
                 COUNT(*) AS COUNT_OVER_18
             FROM
                 CITIZEN
-            WHERE 
+            WHERE
                 FLOOR(MONTHS_BETWEEN(SYSDATE, DATE_OF_BIRTH) / 12) > 18
-                AND (HOMETOWN LIKE %:hometown% OR :hometown IS NULL OR :hometown = '')
+            GROUP BY
+                NVL(REGEXP_SUBSTR(HOMETOWN, 'Huyện [^,]+'),
+                    REGEXP_SUBSTR(HOMETOWN, 'Thành Phố [^,]+'))
             """, nativeQuery = true)
     Long countOver18ByHometown(@Param("hometown") String hometown);
 

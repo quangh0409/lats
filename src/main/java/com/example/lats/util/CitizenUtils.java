@@ -10,6 +10,8 @@ import org.apache.poi.ss.usermodel.Row;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @UtilityClass
@@ -132,7 +134,6 @@ public class CitizenUtils {
 
         next2Cells.forEach(cell ->
         {
-            System.out.print((cell != null ? cell.toString() : "null") + "\t");
             if (cell != null) {
                 switch (cell.getColumnIndex()) {
                     case 16: {

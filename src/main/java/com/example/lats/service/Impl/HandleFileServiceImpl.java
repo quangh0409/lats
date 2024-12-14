@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -33,6 +37,7 @@ public class HandleFileServiceImpl implements HandleFile {
     private final HouseholdRepository householdRepository;
     private final BirthCertificateRepository birthCertificateRepository;
     private final DeathCertificateRepository deathCertificateRepository;
+    private static final int BATCH_SIZE = 1000;
 
     @Override
     @Transactional
@@ -71,7 +76,7 @@ public class HandleFileServiceImpl implements HandleFile {
                     break;
                 }
                 default:
-                    throw  new BaseException(ErrorCode.SHEET_NOT_SUPPORT);
+                    throw new BaseException(ErrorCode.SHEET_NOT_SUPPORT);
             }
 
             return BaseResponse.ok("File uploaded and processed successfully.");
@@ -81,29 +86,34 @@ public class HandleFileServiceImpl implements HandleFile {
     }
 
     private void handleFileCitizen(Sheet sheet) {
-        var citizens = new ArrayList<Citizen>();
-        var educations = new ArrayList<Education>();
-        var occupations = new ArrayList<Occupation>();
-        var maritalStatuses = new ArrayList<MaritalStatus>();
+        AtomicInteger counter = new AtomicInteger();
         StreamSupport.stream(sheet.spliterator(), false)
-                .skip(1) // Bỏ qua hàng đầu tiên
-                .forEach(row -> {
-                    var citizen = CitizenUtils.processCitizen(row);
-                    var education = CitizenUtils.processEducation(row, citizen.getCitizenId());
-                    var occupation = CitizenUtils.processOccupation(row, citizen.getCitizenId());
-                    var maritalStatus = CitizenUtils.processMaritalStatus(row, citizen.getCitizenId());
+                .skip(1) // Skip the header row
+                .collect(Collectors.groupingBy(row -> counter.incrementAndGet() / BATCH_SIZE))
+                .values()
+                .forEach(batch -> {
+                    List<Citizen> citizens = new ArrayList<>();
+                    List<Education> educations = new ArrayList<>();
+                    List<Occupation> occupations = new ArrayList<>();
+                    List<MaritalStatus> maritalStatuses = new ArrayList<>();
 
-                    citizens.add(citizen);
-                    educations.add(education);
-                    occupations.add(occupation);
-                    maritalStatuses.add(maritalStatus);
+                    batch.forEach(row -> {
+                        var citizen = CitizenUtils.processCitizen(row);
+                        var education = CitizenUtils.processEducation(row, citizen.getCitizenId());
+                        var occupation = CitizenUtils.processOccupation(row, citizen.getCitizenId());
+                        var maritalStatus = CitizenUtils.processMaritalStatus(row, citizen.getCitizenId());
+
+                        citizens.add(citizen);
+                        educations.add(education);
+                        occupations.add(occupation);
+                        maritalStatuses.add(maritalStatus);
+                    });
+
+                    saveDataInBatches(citizens, educations, occupations, maritalStatuses, BATCH_SIZE / 10);
                 });
-        citizenRepository.persistAllAndFlush(citizens);
-        educationRepository.persistAllAndFlush(educations);
-        occupationRepository.persistAllAndFlush(occupations);
-        maritalStatusRepository.persistAllAndFlush(maritalStatuses);
-    }
 
+
+    }
 
     private void handleFileHousehold(Sheet sheet) {
         var households = new ArrayList<Household>();
@@ -116,44 +126,163 @@ public class HandleFileServiceImpl implements HandleFile {
     }
 
     private void handleFileJobExperience(Sheet sheet) {
-        var jobExperiences = new ArrayList<JobExperience>();
+
+        AtomicInteger counter = new AtomicInteger();
         StreamSupport.stream(sheet.spliterator(), false)
-                .skip(1) // Bỏ qua hàng đầu tiên
-                .forEach(row -> {
-                    jobExperiences.add(JobExperienceUtils.processJobExperience(row));
+                .skip(1) // Skip the header row
+                .collect(Collectors.groupingBy(row -> counter.incrementAndGet() / BATCH_SIZE))
+                .values()
+                .forEach(batch -> {
+                    var jobExperiences = new ArrayList<JobExperience>();
+                    batch.forEach(row -> {
+                        jobExperiences.add(JobExperienceUtils.processJobExperience(row));
+                    });
+                    jobExperienceRepository.persistAllAndFlush(jobExperiences);
                 });
-        jobExperienceRepository.persistAllAndFlush(jobExperiences);
     }
 
     private void handleFileMarriageCertificate(Sheet sheet) {
-        var marriageCertificates = new ArrayList<MarriageCertificate>();
+        AtomicInteger counter = new AtomicInteger();
         StreamSupport.stream(sheet.spliterator(), false)
                 .skip(1)
-                .forEach(row -> {
-                    marriageCertificates.add(MarriageCertificateUtils.processMarriageCertificate(row));
+                .collect(Collectors.groupingBy(row -> counter.incrementAndGet() / BATCH_SIZE))
+                .values()
+                .forEach(batch -> {
+                    var marriageCertificates = new ArrayList<MarriageCertificate>();
+                    batch.forEach(row -> {
+                        marriageCertificates.add(MarriageCertificateUtils.processMarriageCertificate(row));
+                    });
+                    marriageCertificateRepository.persistAllAndFlush(marriageCertificates);
                 });
-        marriageCertificateRepository.persistAllAndFlush(marriageCertificates);
     }
 
     private void handleFileBirthCertificate(Sheet sheet) {
-        var birthCertificates =  new ArrayList<BirthCertificate>();
+        AtomicInteger counter = new AtomicInteger();
         StreamSupport.stream(sheet.spliterator(), false)
                 .skip(1)
-                .forEach(row -> {
-                    birthCertificates.add(BirthCertificateUtils.processBirthCertificate(row));
+                .collect(Collectors.groupingBy(row -> counter.incrementAndGet() / BATCH_SIZE))
+                .values()
+                .forEach(batch -> {
+                    var birthCertificates = new ArrayList<BirthCertificate>();
+                    batch.forEach(row -> {
+                        birthCertificates.add(BirthCertificateUtils.processBirthCertificate(row));
+                    });
+                    birthCertificateRepository.persistAllAndFlush(birthCertificates);
                 });
-        birthCertificateRepository.persistAllAndFlush(birthCertificates);
     }
 
     private void handleFileDeathCertificate(Sheet sheet) {
-        var deathCertificates = new ArrayList<DeathCertificate>();
-
+        AtomicInteger counter = new AtomicInteger();
         StreamSupport.stream(sheet.spliterator(), false)
                 .skip(1)
-                .forEach(row -> {
-                    deathCertificates.add(DeathCertificateUtils.processDeathCertificate(row));
+                .collect(Collectors.groupingBy(row -> counter.incrementAndGet() / BATCH_SIZE))
+                .values()
+                .forEach(batch -> {
+                    var deathCertificates = new ArrayList<DeathCertificate>();
+                    batch.forEach(row -> {
+                        deathCertificates.add(DeathCertificateUtils.processDeathCertificate(row));
+                    });
+                    deathCertificateRepository.persistAllAndFlush(deathCertificates);
                 });
-        deathCertificateRepository.persistAllAndFlush(deathCertificates);
+    }
+
+    public void saveCitizensInBatchesUsingStream(List<Citizen> citizens, int batchSize) {
+        if (citizens == null || citizens.isEmpty()) {
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(0);
+
+        // Sử dụng Stream để chia danh sách thành các batch
+        citizens.stream()
+                .collect(Collectors.groupingBy(citizen -> counter.getAndIncrement() / batchSize))
+                .values()
+                .forEach(batch -> {
+                    try {
+                        // Đẩy batch xuống DB
+                        citizenRepository.persistAllAndFlush(batch);
+                    } catch (Exception e) {
+                        // Xử lý lỗi nếu cần
+                        System.err.println("Error while saving batch: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void saveEducationsInBatchesUsingStream(List<Education> educations, int batchSize) {
+        if (educations == null || educations.isEmpty()) {
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(0);
+
+        // Sử dụng Stream để chia danh sách thành các batch
+        educations.stream()
+                .collect(Collectors.groupingBy(education -> counter.getAndIncrement() / batchSize))
+                .values()
+                .forEach(batch -> {
+                    try {
+                        // Đẩy batch xuống DB
+                        educationRepository.persistAllAndFlush(batch);
+                    } catch (Exception e) {
+                        // Xử lý lỗi nếu cần
+                        System.err.println("Error while saving batch of educations: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void saveOccupationsInBatchesUsingStream(List<Occupation> occupations, int batchSize) {
+        if (occupations == null || occupations.isEmpty()) {
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(0);
+
+        // Sử dụng Stream để chia danh sách thành các batch
+        occupations.stream()
+                .collect(Collectors.groupingBy(occupation -> counter.getAndIncrement() / batchSize))
+                .values()
+                .forEach(batch -> {
+                    try {
+                        // Đẩy batch xuống DB
+                        occupationRepository.persistAllAndFlush(batch);
+                    } catch (Exception e) {
+                        // Xử lý lỗi nếu cần
+                        System.err.println("Error while saving batch of occupations: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void saveMaritalStatusesInBatchesUsingStream(List<MaritalStatus> maritalStatuses, int batchSize) {
+        if (maritalStatuses == null || maritalStatuses.isEmpty()) {
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(0);
+
+        // Sử dụng Stream để chia danh sách thành các batch
+        maritalStatuses.stream()
+                .collect(Collectors.groupingBy(status -> counter.getAndIncrement() / batchSize))
+                .values()
+                .forEach(batch -> {
+                    try {
+                        // Đẩy batch xuống DB
+                        maritalStatusRepository.persistAllAndFlush(batch);
+                    } catch (Exception e) {
+                        // Xử lý lỗi nếu cần
+                        System.err.println("Error while saving batch of marital statuses: " + e.getMessage());
+                    }
+                });
+    }
+
+    public void saveDataInBatches(List<Citizen> citizens, List<Education> educations, List<Occupation> occupations, List<MaritalStatus> maritalStatuses, int batchSize) {
+        // Chạy song song các tác vụ lưu dữ liệu
+        CompletableFuture<Void> citizensFuture = CompletableFuture.runAsync(() -> saveCitizensInBatchesUsingStream(citizens, batchSize));
+        CompletableFuture<Void> educationsFuture = CompletableFuture.runAsync(() -> saveEducationsInBatchesUsingStream(educations, batchSize));
+        CompletableFuture<Void> occupationsFuture = CompletableFuture.runAsync(() -> saveOccupationsInBatchesUsingStream(occupations, batchSize));
+        CompletableFuture<Void> maritalStatusesFuture = CompletableFuture.runAsync(() -> saveMaritalStatusesInBatchesUsingStream(maritalStatuses, batchSize));
+
+        // Chờ cho tất cả các tác vụ hoàn thành
+        CompletableFuture.allOf(citizensFuture, educationsFuture, occupationsFuture, maritalStatusesFuture).join();
     }
 }
 

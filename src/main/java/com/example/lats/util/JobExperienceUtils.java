@@ -11,8 +11,8 @@ public class JobExperienceUtils {
     public JobExperience processJobExperience(Row row) {
         var jobExperience = new JobExperience().setCreateAt(OffsetDateTime.now());
         row.forEach(cell -> {
-            if(cell != null){
-                switch (cell.getColumnIndex()){
+            if (cell != null) {
+                switch (cell.getColumnIndex()) {
                     case 0:
                         jobExperience.setCitizenId(cell.toString());
                         break;
@@ -20,16 +20,16 @@ public class JobExperienceUtils {
                         jobExperience.setGender(cell.toString());
                         break;
                     case 3:
-                        jobExperience.setDateOfBirth(DateUtils.format(cell.toString()));
+                        jobExperience.setDateOfBirth(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 4:
                         jobExperience.setHometown(cell.toString());
                         break;
                     case 5:
-                        jobExperience.setStartDate(DateUtils.format(cell.toString()));
+                        jobExperience.setStartDate(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 6:
-                        jobExperience.setEndDate(DateUtils.format(cell.toString()));
+                        jobExperience.setEndDate(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 7:
                         jobExperience.setJobPosition(cell.toString());
