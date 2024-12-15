@@ -28,6 +28,6 @@ public class DeathCertificate extends BaseClass<DeathCertificate> {
     String placeOfDeath;
     String causeOfDeathCode;
     String registrationPlace;
-    Long confirmedId; // Reference to Citizen entity
+    String confirmedId; // Reference to Citizen entity
     Date dateOfRegistration;
 }

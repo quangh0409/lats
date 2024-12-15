@@ -36,7 +36,7 @@ public class DeathCertificateUtils {
                         deathCertificate.setRegistrationPlace(cell.toString());
                         break;
                     case 10:
-                        deathCertificate.setConfirmedId(Long.valueOf(cell.toString()));
+                        deathCertificate.setConfirmedId(cell.toString());
                         break;
                     case 11:
                         deathCertificate.setDateOfRegistration(DateUtils.format(cell.toString()));
