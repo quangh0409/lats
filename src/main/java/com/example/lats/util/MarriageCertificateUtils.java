@@ -14,7 +14,7 @@ public class MarriageCertificateUtils {
             if(cell != null){
                 switch (cell.getColumnIndex()){
                     case 0:
-                        marriageCertificate.setSignDate(DateUtils.format(cell.toString()));
+                        marriageCertificate.setSignDate(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 1:
                         marriageCertificate.setRegistrationPlace(cell.toString());
@@ -23,7 +23,7 @@ public class MarriageCertificateUtils {
                         marriageCertificate.setWifeId(cell.toString());
                         break;
                     case 6:
-                        marriageCertificate.setWifeDateOfBirth(DateUtils.format(cell.toString()));
+                        marriageCertificate.setWifeDateOfBirth(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 7:
                         marriageCertificate.setWifeHometown(cell.toString());
@@ -32,7 +32,7 @@ public class MarriageCertificateUtils {
                         marriageCertificate.setHusbandId(cell.toString());
                         break;
                     case 12:
-                        marriageCertificate.setHusbandDateOfBirth(DateUtils.format(cell.toString()));
+                        marriageCertificate.setHusbandDateOfBirth(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 13:
                         marriageCertificate.setHusbandHometown(cell.toString());

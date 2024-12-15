@@ -18,13 +18,13 @@ public class DeathCertificateUtils {
                         deathCertificate.setGender(cell.toString());
                         break;
                     case 2:
-                        deathCertificate.setDateOfBirth(DateUtils.format(cell.toString().trim()));
+                        deathCertificate.setDateOfBirth(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 5:
                         deathCertificate.setDeceasedId(cell.toString());
                         break;
                     case 6:
-                        deathCertificate.setTimeOfDeath(DateUtils.format(cell.toString().trim()));
+                        deathCertificate.setTimeOfDeath(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 7:
                         deathCertificate.setPlaceOfDeath(cell.toString());

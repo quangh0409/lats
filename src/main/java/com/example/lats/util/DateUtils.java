@@ -38,7 +38,7 @@ public class DateUtils {
     public boolean checkFormat(String date) {
         try {
             if (date == null || date.isEmpty()) {
-                throw new IllegalArgumentException("Date string is null or empty.");
+                return false;
             }
 
             SimpleDateFormat dateFormat;
@@ -54,10 +54,10 @@ public class DateUtils {
 
         } catch (ParseException e) {
             System.out.println("Error parsing date: " + date);
-            throw new RuntimeException("Error parsing date: " + date, e);
+            return false;
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid date format: " + date);
-            throw e;  // Re-throw the exception after logging
+            return false;
         }
     }
 }

@@ -17,7 +17,7 @@ public class BirthCertificateUtils {
                 switch (cell.getColumnIndex()){
 
                     case 1:
-                        birthCertificate.setDateOfBirth(DateUtils.format(cell.toString()));
+                        birthCertificate.setDateOfBirth(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     case 2:
                         birthCertificate.setGender(cell.toString());
@@ -41,7 +41,7 @@ public class BirthCertificateUtils {
                         birthCertificate.setRegistrationPlace(cell.toString());
                         break;
                     case 10:
-                        birthCertificate.setRegistrationDate(DateUtils.format(cell.toString()));
+                        birthCertificate.setRegistrationDate(DateUtils.checkFormat(cell.toString()) ? DateUtils.format(cell.toString()) : null);
                         break;
                     /**
                      * @TODO handle exceptions
