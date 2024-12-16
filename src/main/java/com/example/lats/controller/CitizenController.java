@@ -4,6 +4,7 @@ import com.example.lats.common.BaseResponse;
 import com.example.lats.common.Response;
 import com.example.lats.model.entity.Citizen;
 import com.example.lats.model.response.EducationResponse;
+import com.example.lats.model.response.EthnicityCount;
 import com.example.lats.service.CitizenService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,10 @@ public class CitizenController {
     @GetMapping("/district-population")
     public BaseResponse<List<Map<String, Object>>> getDistrictPopulationCounts() {
         return BaseResponse.ok(citizenService.getDistrictPopulationCounts());
+    }
+
+    @GetMapping("/ethnicity")
+    public BaseResponse<List<EthnicityCount>> getGroupedByEthnicity(@RequestParam(required = false) String hometown) {
+        return BaseResponse.ok(citizenService.getGroupedByEthnicity(hometown));
     }
 }

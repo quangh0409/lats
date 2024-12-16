@@ -1,4 +1,4 @@
-spring:
+-spring:
   datasource:
     url: jdbc:oracle:thin:@103.166.185.48:6821:FREE
     username: C##DATN       # Thay thế bằng tên người dùng Oracle của bạn

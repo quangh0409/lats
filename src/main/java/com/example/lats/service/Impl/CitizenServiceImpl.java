@@ -3,6 +3,7 @@ package com.example.lats.service.Impl;
 import com.example.lats.common.BaseResponse;
 import com.example.lats.model.entity.Citizen;
 import com.example.lats.model.response.EducationResponse;
+import com.example.lats.model.response.EthnicityCount;
 import com.example.lats.repository.CitizenRepository;
 import com.example.lats.repository.EducationRepository;
 import com.example.lats.service.CitizenService;
@@ -101,17 +102,11 @@ public class CitizenServiceImpl implements CitizenService {
         // Lấy dữ liệu về số dân theo từng trình độ học vấn và HOMETOWN (hoặc toàn bộ nếu HOMETOWN là null)
         List<Object[]> result = citizenRepository.countPopulationByEducationLevelAndHometown(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
 
-        // Lấy tổng số dân
-        //Long totalPopulation = citizenRepository.countByGenderAndHometown(null, Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+        long totalPopulation = 1;
 
-        long totalPopulation = educationRepository.count();
-
-        // Kiểm tra tổng số dân có khác 0 để tránh lỗi chia cho 0
-        if (totalPopulation == 0) {
-            System.out.println("Tổng số dân là 0, không thể tính tỷ lệ.");
-            return new ArrayList<EducationResponse>();
+        for (Object[] row : result) {
+            totalPopulation += (Long) row[1];
         }
-
         // Khởi tạo Map để lưu trữ tỷ lệ phần trăm
 
         var list = new ArrayList<EducationResponse>();
@@ -152,5 +147,23 @@ public class CitizenServiceImpl implements CitizenService {
             processedData.add(editableRow); // Thêm bản ghi đã xử lý vào danh sách mới
         }
         return processedData;
+    }
+
+    @Override
+    public List<EthnicityCount> getGroupedByEthnicity(String hometown) {
+        var ethnicities= citizenRepository.findEthnicityAndCitizenCount(Objects.equals(hometown, "") ? hometown : districtService.getDistrictNameById(Long.valueOf(hometown)));
+
+        double total = 0;
+
+        for(EthnicityCount ethnicity: ethnicities){
+            total += ethnicity.getTotal();
+        }
+
+
+        for(EthnicityCount ethnicity: ethnicities){
+            ethnicity.setTotal(Math.round((ethnicity.getTotal() / total * 100) * 100.0) / 100.0);
+        }
+
+        return ethnicities;
     }
 }

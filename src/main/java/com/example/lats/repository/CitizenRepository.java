@@ -1,6 +1,7 @@
 package com.example.lats.repository;
 
 import com.example.lats.model.entity.Citizen;
+import com.example.lats.model.response.EthnicityCount;
 import io.hypersistence.utils.spring.repository.BaseJpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -169,5 +170,12 @@ public interface CitizenRepository extends BaseJpaRepository<Citizen, String> {
                 AND (HOMETOWN LIKE %:hometown% OR :hometown IS NULL OR :hometown = '')
             """, nativeQuery = true)
     Long countOver18ByHometown(@Param("hometown") String hometown);
+
+    @Query("SELECT new com.example.lats.model.response.EthnicityCount(c.ethnicity, COUNT(c)) " +
+            "FROM Citizen c " +
+            "WHERE (:hometown IS NULL OR :hometown = '' OR c.hometown LIKE %:hometown%) " +
+            "GROUP BY c.ethnicity " +
+            "ORDER BY COUNT(c) DESC")
+    List<EthnicityCount> findEthnicityAndCitizenCount(@Param("hometown") String hometown);
 
 }
